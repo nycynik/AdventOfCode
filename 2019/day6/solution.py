@@ -52,7 +52,35 @@ def find_orbits(file_name):
     total = 0
     for node in orbits.values():
         total += node.depth
+
     print("TOTAL:", total)
+
+    if 'YOU' in orbits and 'SAN' in orbits:
+
+        # choose one, and find all children, walk children and check if it is in
+        # the children of the second, once a common ancestor is found, we have a solution.
+        my_children = {}
+        for node in orbits['YOU'].ancestors:
+            my_children[node.name] = node
+
+        best_match = None
+        for node in orbits['SAN'].ancestors:
+            if node.name in my_children:
+                best_match = node
+
+        if best_match is not None:
+            distance = 0
+            start = orbits['YOU'].parent
+            while start.name != best_match.name:
+                start = start.parent
+                distance += 1
+
+            start = orbits['SAN'].parent
+            while start.name != best_match.name:
+                start = start.parent
+                distance += 1
+
+        print('found it', distance)
 
     data.close()
 
